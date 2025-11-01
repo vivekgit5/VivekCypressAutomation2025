@@ -1,36 +1,42 @@
-describe('Calendar end to end testing', () =>{
+describe('Calendar End-to-End Testing', () => {
 
-    it('calendar testcase', function(){
+  it('Selects a specific date dynamically from the calendar', () => {
 
-        cy.viewport(1221, 687);
-        const day = 20
-        const month_number = 6
-        const monthNames = [
-  'January', 'February', 'March', 'April',
-  'May', 'June', 'July', 'August',
-  'September', 'October', 'November', 'December'
-]
-const monthName = monthNames[month_number - 1]
-        const year = 2027
-        cy.visit('https://rahulshettyacademy.com/seleniumPractise/#/offers')
-        cy.wait(4000)
-        cy.get('div.react-date-picker__inputGroup').click()
-        cy.get('.react-calendar__navigation__label').click()
-        cy.get('.react-calendar__navigation__label').click()
+    // --- Test configuration ---
+    cy.viewport(1221, 687); // Set consistent viewport for test stability
 
-        //cy.contains('button.react-calendar__tile', 2027).click() hard-coded year
-        cy.contains('button.react-calendar__tile', year).click()
+    const day = 20;
+    const monthNumber = 6; // June (1-indexed)
+    const year = 2027;
 
-        //cy.get('abbr[aria-label="June 2027"]').click() hard-coded month and year
-        cy.get(`abbr[aria-label="${monthName} ${year}"]`).click()
+    // Helper array for month names
+    const monthNames = [
+      'January', 'February', 'March', 'April', 'May', 'June',
+      'July', 'August', 'September', 'October', 'November', 'December'
+    ];
 
-        //cy.get('abbr[aria-label="June 20, 2027"]').click() hard-coded month, day and year
-        cy.get(`abbr[aria-label="${monthName} ${day}, ${year}"]`).click()
+    const monthName = monthNames[monthNumber - 1];
 
+    // --- Test steps ---
 
-        //cy.get('.react-calendar__tile').eq(month_number-1).click()
-        //cy.get('.react-calendar__navigation__label').click()
+    cy.visit('https://rahulshettyacademy.com/seleniumPractise/#/offers');
 
-    })
+    // Wait for the page to load react components
+    cy.get('div.react-date-picker__inputGroup', { timeout: 10000 }).should('be.visible').click();
 
-})
+    // Navigate to decade view to pick the correct year
+    cy.get('.react-calendar__navigation__label').click(); // Go to year view
+    cy.get('.react-calendar__navigation__label').click(); // Go to decade view
+
+    // Select year dynamically
+    cy.contains('button.react-calendar__tile', year).click();
+
+    // Select month dynamically
+    cy.get(`abbr[aria-label="${monthName} ${year}"]`).click();
+
+    // Select day dynamically
+    cy.get(`abbr[aria-label="${monthName} ${day}, ${year}"]`).click();
+
+  });
+
+});
